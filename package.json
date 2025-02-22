@@ -1,0 +1,28 @@
+{
+  "name": "btcrsvp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx nodemon index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.4",
+    "@types/sqlite3": "^5.1.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.2",
+    "form-data": "^4.0.2",
+    "liquidjs-lib": "^6.0.2-liquid.36",
+    "mailgun.js": "^11.1.0",
+    "nodemon": "^3.1.9",
+    "promised-sqlite3": "^2.1.0",
+    "resend": "^4.1.2",
+    "sqlite3": "^5.1.7",
+    "tiny-secp256k1": "^2.2.3",
+    "uuid": "^11.1.0"
+  }
+}
