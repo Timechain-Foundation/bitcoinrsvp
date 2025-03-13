@@ -1,0 +1,51 @@
+.nav {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  box-sizing: border-box;
+  padding: 0px 148px;
+  width: 100%;
+  background-color: rgba(17, 24, 39, 0.95);
+  border-bottom: 1px solid rgb(31, 41, 55);
+  backdrop-filter: blur(4px);
+}
+
+.svg {
+  width: 32px;
+  height: 32px;
+  color: var(--main-color);
+}
+
+.logoText {
+  font-size: 20px;
+  font-weight: 700;
+  margin-left: 12px;
+}
+
+.leftAligned {
+  display: flex;
+  align-items: center;
+}
+
+.rightAligned {
+  margin-left: auto;
+}
+
+.loginButton {
+  cursor: pointer;
+  padding: 8px 16px;
+  border: 1px solid var(--main-color);
+  color: var(--main-color);
+  background-color: transparent;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.loginButton:hover {
+  background-color: var(--main-color);
+  color: white;
+}
