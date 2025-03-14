@@ -2,7 +2,7 @@
 
 ## Running the application
 
-Before starting the application, you'll need to load up a config file containing values for the necessary environment variables:
+Before starting the application, you'll need to load up a config file containing values for the necessary environment variables (see `example.env` for reference):
 
 `source .env`
 
