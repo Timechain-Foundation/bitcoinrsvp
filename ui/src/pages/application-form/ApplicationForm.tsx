@@ -57,8 +57,6 @@ function ApplicationForm() {
           <p>{rules}</p>
         </div>
       </div>
-
-      {JSON.stringify(form)}
       <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
         <TextInput
           label="Name"
