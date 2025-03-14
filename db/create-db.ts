@@ -36,6 +36,7 @@ function createDb() {
     db.run(`
       CREATE TABLE IF NOT EXISTS user (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
         email TEXT NOT NULL,
         date_created TEXT NOT NULL
       )
@@ -58,6 +59,8 @@ function createDb() {
       CREATE TABLE IF NOT EXISTS group_entity (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
+        description TEXT,
+        rules TEXT,
         organizer_id INTEGER NOT NULL,
         date_created TEXT NOT NULL,
         FOREIGN KEY (organizer_id) REFERENCES organizer (id)
@@ -101,9 +104,9 @@ function createDb() {
       )
     `);
 
-    // 9. user_application_answer
+    // 9. group_application_answer
     db.run(`
-      CREATE TABLE IF NOT EXISTS user_application_answer (
+      CREATE TABLE IF NOT EXISTS group_application_answer (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         group_application_question_id INTEGER NOT NULL,
         user_id INTEGER NOT NULL,

@@ -54,3 +54,9 @@
 .submitButton {
   margin-top: 8px;
 }
+
+.error {
+  color: crimson;
+  font-size: 14px;
+  height: 15px;
+}

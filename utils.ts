@@ -19,11 +19,31 @@ export async function getGroupByGroupIdAndOrgId(db, groupId, orgId) {
 }
 
 export async function getGroupById(db, groupId) {
-  const getGroupByGroupIdSql = `SELECT * FROM group_entity WHERE id = ?`;
+  const getGroupByGroupIdSql = `
+  SELECT 
+    group_entity.id as id,
+    group_entity.name, 
+    group_entity.description, 
+    group_entity.rules,
+    COALESCE(
+        (
+            SELECT json_group_array(json_object('id', q.id, 'question', q.question))
+            FROM group_application_question q
+            WHERE q.group_id = group_entity.id
+        ),
+        '[]'
+    ) AS questions
+  FROM group_entity 
+  LEFT JOIN 
+    group_application_question ON group_application_question.group_id = group_entity.id 
+  WHERE group_entity.id = ?
+  GROUP BY group_entity.id
+`;
 
   let group;
   try {
     group = await db.get(getGroupByGroupIdSql, groupId);
+    group.questions = JSON.parse(group?.questions);
   } catch (e) {
     console.error(e);
     return;
@@ -189,17 +209,9 @@ export async function createUserTicket(
   return code;
 }
 
-export async function getUserTicket(
-  db: any,
-  eventId: any,
-  userId: any
-) {
+export async function getUserTicket(db: any, eventId: any, userId: any) {
   const sql = `SELECT * FROM user_ticket WHERE user_id = ? AND event_id = ?`;
-  let userTicket = await db.get(
-    sql,
-    userId,
-    eventId,
-  );
+  let userTicket = await db.get(sql, userId, eventId);
 
   return userTicket;
 }
