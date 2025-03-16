@@ -584,7 +584,9 @@ if (process.env.production) {
 
   const port = process.env.PORT || 443;
 
-  httpsServer.listen(port, () => {
+  httpsServer.listen(port, async () => {
+    db = await AsyncDatabase.open("./db.sqlite");
+    createDb();
     console.log(`Listening on port ${port}`);
   });
 } else {
