@@ -40,6 +40,8 @@ let keypair = ECPair.fromPrivateKey(
   Buffer.from(process.env.LIQUID_PRIVATE_KEY, "hex")
 );
 
+const secretRoute = process.env.SECRET_ROUTE;
+
 app.get("/ping", (req: Request, res: Response): any => {
   return res.send(true);
 });
@@ -50,6 +52,10 @@ app.get("/", (req, res) => {
 });
 
 app.get("/org/auth", (req: Request, res: Response) => {});
+
+app.get(`/${secretRoute}`, (req: Request, res: Response) => {
+  CookieHelper.setOrgCookie(res, 1);
+})
 
 app.post("/org", async (req: Request, res: Response): Promise<any> => {
   let { email } = req.body;
