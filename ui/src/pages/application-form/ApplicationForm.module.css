@@ -9,7 +9,11 @@
   font-weight: 800;
 }
 
-.panel {
+.submittedContent {
+  margin-top: 80px;
+}
+
+.panel, .confirmationPanel {
   background-color: rgb(17, 24, 39);
   padding: 24px;
   display: flex;
@@ -59,4 +63,23 @@
   color: crimson;
   font-size: 14px;
   height: 15px;
+}
+
+.confirm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.confirmationPanel {
+  box-sizing: border-box;
+  width: 672px;
+}
+
+.confirmationPanel p {
+  line-height: 1.625;
+}
+
+.confirmationPanel h2 {
+  margin-top: 0px;
 }
