@@ -49,3 +49,11 @@
   background-color: var(--main-color);
   color: white;
 }
+
+
+
+@media screen and (max-width: 810px) {
+  .nav {
+    padding: 0px 25px;
+  }
+}

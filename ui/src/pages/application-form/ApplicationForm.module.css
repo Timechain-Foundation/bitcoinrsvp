@@ -83,3 +83,9 @@
 .confirmationPanel h2 {
   margin-top: 0px;
 }
+
+@media screen and (max-width: 810px) {
+  .content {
+    width: auto;
+  }
+}
