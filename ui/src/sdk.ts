@@ -1,4 +1,4 @@
-const API_BASE = `http://localhost:8080`;
+const API_BASE = ``;
 
 async function get_(path: string) {
   let res = await fetch(`${API_BASE}/${path}`);

@@ -24,6 +24,8 @@ import {
 } from "./utils";
 import BoltzClient from "./boltz-client";
 var cors = require("cors");
+import * as fs from "fs";
+var https = require("https");
 
 let app: Express = express();
 app.use(express.json());
@@ -570,11 +572,25 @@ app.post(
 
 app.use(express.static(__dirname + "/ui/build"));
 
-const PORT = 8080;
+const PORT = process.env.PORT ?? 80;
 
 let db;
-app.listen(PORT, async () => {
-  db = await AsyncDatabase.open("./db.sqlite");
-  createDb();
-  console.log(`Listening on ${PORT}`);
-});
+
+if (process.env.production) {
+  var privateKey = fs.readFileSync("./privkey.pem", "utf8");
+  var certificate = fs.readFileSync("./fullchain.pem", "utf8");
+  var credentials = { key: privateKey, cert: certificate };
+  var httpsServer = https.createServer(credentials, app);
+
+  const port = process.env.PORT || 443;
+
+  httpsServer.listen(port, () => {
+    console.log(`Listening on port ${port}`);
+  });
+} else {
+  app.listen(PORT, async () => {
+    db = await AsyncDatabase.open("./db.sqlite");
+    createDb();
+    console.log(`Listening on ${PORT}`);
+  });
+}
