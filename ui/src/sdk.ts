@@ -36,3 +36,17 @@ export function postApplication(
 ) {
   return post_(`${groupId}/membership`, membershipApplication);
 }
+
+export function getApplications(groupId: number) {
+  return get_(`${groupId}/membership`);
+}
+
+export enum ApprovalStatus {
+  REJECT = "rejected",
+  PENDING = "pending",
+  APPROVE = "approved"
+}
+
+export function setApprovalStatus(groupId: number, membershipId: number, approvalStatus: ApprovalStatus) {
+  return post_(`${groupId}/membership/${membershipId}/${approvalStatus}`);
+}
