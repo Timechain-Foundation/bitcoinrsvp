@@ -29,7 +29,32 @@ var https = require("https");
 
 let app: Express = express();
 app.use(express.json());
-app.use(cors());
+
+var whitelist;
+try {
+  console.log(
+    `Configuring CORS whitelist from env var: ${process.env.CORS_WHITELIST}`
+  );
+  whitelist = JSON.parse(process.env.CORS_WHITELIST);
+} catch (e) {
+  console.log("Empty or invalid CORS whitelist found");
+  whitelist = [];
+}
+
+var corsOptions = {
+  origin: function (origin, callback) {
+    // if (whitelist.indexOf(origin) !== -1) {
+    //   callback(null, true);
+    // } else {
+    //   callback(new Error("Not allowed by CORS"));
+    // }
+
+    callback(null, true);
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 const UNAUTHENTICATED_ORGANIZER_REQUEST =
   "You must be logged in as an org to request this action";
@@ -55,9 +80,10 @@ app.get("/", (req, res) => {
 
 app.get("/org/auth", (req: Request, res: Response) => {});
 
-app.get(`/${secretRoute}`, (req: Request, res: Response) => {
+app.get(`/${secretRoute}`, (req: Request, res: Response): any => {
   CookieHelper.setOrgCookie(res, 1);
-})
+  return res.send(true);
+});
 
 app.post("/org", async (req: Request, res: Response): Promise<any> => {
   let { email } = req.body;
@@ -571,6 +597,11 @@ app.post(
 );
 
 app.use(express.static(__dirname + "/ui/build"));
+
+app.get("*", (req: Request, res: Response): any => {
+  const ext = __dirname + "/ui/build";
+  res.sendFile(ext + "/index.html");
+});
 
 const PORT = process.env.PORT ?? 80;
 

@@ -1,7 +1,9 @@
 const API_BASE = ``;
 
 async function get_(path: string) {
-  let res = await fetch(`${API_BASE}/${path}`);
+  let res = await fetch(`${API_BASE}/${path}`, {
+    credentials: "include",
+  });
   return res.json();
 }
 
@@ -32,4 +34,8 @@ export function postApplication(
   membershipApplication: MembershipApplication
 ) {
   return post_(`${groupId}/membership`, membershipApplication);
+}
+
+export function getApplications(groupId: number) {
+  return get_(`${groupId}/membership`);
 }
