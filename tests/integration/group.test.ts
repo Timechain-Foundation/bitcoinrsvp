@@ -40,7 +40,7 @@ describe('POST /group', () => {
 
     expect(res2.statusCode).toBe(409);
     expect(res2.body.error).toBe(
-      'Group name already exists for this organizer.'
+      'Constraint error: Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: group_entity.name, group_entity.organizer_id'
     );
 
     // DB should still have just one row
