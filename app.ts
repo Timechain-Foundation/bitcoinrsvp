@@ -27,7 +27,32 @@ var https = require('https');
 
 const app: Express = express();
 app.use(express.json());
-app.use(cors());
+
+var whitelist;
+try {
+  console.log(
+    `Configuring CORS whitelist from env var: ${process.env.CORS_WHITELIST}`
+  );
+  whitelist = JSON.parse(process.env.CORS_WHITELIST);
+} catch (e) {
+  console.log('Empty or invalid CORS whitelist found');
+  whitelist = [];
+}
+
+var corsOptions = {
+  origin: function (origin, callback) {
+    // if (whitelist.indexOf(origin) !== -1) {
+    //   callback(null, true);
+    // } else {
+    //   callback(new Error("Not allowed by CORS"));
+    // }
+
+    callback(null, true);
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 const db = new DB();
 
@@ -58,8 +83,9 @@ app.get('/', (req, res) => {
 
 app.get('/org/auth', (req: Request, res: Response) => {});
 
-app.get(`/${secretRoute}`, (req: Request, res: Response) => {
+app.get(`/${secretRoute}`, (req: Request, res: Response): any => {
   CookieHelper.setOrgCookie(res, 1);
+  return res.send(true);
 });
 
 app.post('/org', async (req: Request, res: Response): Promise<any> => {
@@ -369,10 +395,10 @@ app.post(
 
     let { group_id, membership_id, approval_status } = req.params;
 
-    if (approval_status != 'approve' && approval_status != 'reject') {
+    if (approval_status != 'approved' && approval_status != 'rejected') {
       return res
         .status(400)
-        .send("Approval status must be 'approve' or 'reject'");
+        .send("Approval status must be 'approved' or 'rejected'");
     }
 
     const getGroupByGroupIdAndOrgIdSql = `SELECT * FROM group_entity WHERE id = ? AND organizer_id = ?`;
@@ -408,8 +434,8 @@ app.post(
         );
     }
 
-    const updateMembershipApplication = `UPDATE membership SET approval_status = ?`;
-    await db.runAsync(updateMembershipApplication, approval_status);
+    const updateMembershipApplication = `UPDATE membership SET approval_status = ? WHERE membership.id = ?`;
+    await db.runAsync(updateMembershipApplication, approval_status, membership_id);
 
     return res.json(true);
   }
@@ -581,5 +607,10 @@ app.post(
     }
   }
 );
+
+app.get('*', (req: Request, res: Response): any => {
+  const ext = __dirname + '/ui/build';
+  res.sendFile(ext + '/index.html');
+});
 
 export default app;
