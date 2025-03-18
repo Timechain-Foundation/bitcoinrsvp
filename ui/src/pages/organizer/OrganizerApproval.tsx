@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./OrganizerApproval.module.css";
-import { getApplications } from "../../sdk";
+import { ApprovalStatus, getApplications, setApprovalStatus } from "../../sdk";
 import {
   Bitcoin,
   Search,
@@ -10,6 +10,8 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
+import classNames from "classnames";
+import { capitalizeFirstLetter } from "../../utils";
 
 interface TableProps {
   columns: any[];
@@ -27,6 +29,7 @@ function Table({ columns, data }: TableProps) {
               key={index}
               style={{
                 width: col.width,
+                textAlign: col.rightAlign && "right",
               }}
             >
               {col.name}
@@ -73,12 +76,12 @@ function Table({ columns, data }: TableProps) {
                 })}
               </div>
               {expandedIndex == rowIndex && (
-                <div>
+                <div className={styles.expanded}>
                   {row?.answers?.map((r: any) => {
                     return (
                       <div>
-                        <h3>{r.question}</h3>
-                        <p>{r.answer}</p>
+                        <h3 className={styles.question}>{r.question}</h3>
+                        <p className={styles.answer}>{r.answer}</p>
                       </div>
                     );
                   })}
@@ -94,7 +97,7 @@ function Table({ columns, data }: TableProps) {
 
 export default function OragnizerApproval() {
   const GROUP_ID = 1;
-  let [applications, setApplications] = useState([]);
+  let [applications, setApplications] = useState<any[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -106,13 +109,42 @@ export default function OragnizerApproval() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "approved":
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
+        return (
+          <CheckCircle
+            className={classNames(styles.statusIcon, styles.approvedIcon)}
+          />
+        );
       case "rejected":
-        return <XCircle className="w-5 h-5 text-red-500" />;
+        return (
+          <XCircle
+            className={classNames(styles.statusIcon, styles.rejectedIcon)}
+          />
+        );
       default:
-        return <Clock className="w-5 h-5 text-yellow-500" />;
+        return (
+          <Clock
+            className={classNames(styles.statusIcon, styles.pendingIcon)}
+          />
+        );
     }
   };
+
+  function updateApplicationStatus(
+    applicationId: number,
+    approvalStatus: ApprovalStatus
+  ) {
+    let modifiedApplications = applications.map((application: any) => {
+      if (application.id === applicationId) {
+        return {
+          ...application,
+          approval_status: approvalStatus,
+        };
+      }
+      return application;
+    });
+
+    setApplications(modifiedApplications);
+  }
 
   return (
     <>
@@ -133,6 +165,7 @@ export default function OragnizerApproval() {
           {
             name: "Actions",
             width: 200,
+            rightAlign: true,
           },
         ]}
         data={applications.map((a: any, i: number) => {
@@ -141,20 +174,59 @@ export default function OragnizerApproval() {
               <div className={styles.applicant}>
                 <ChevronDown className={styles.applicantExpandIcon} />
                 <div>
-                  <p>{a.email}</p>
+                  <p className={styles.name}>{a.email}</p>
                   <p>{a.email}</p>
                 </div>
               </div>
             ),
             status: (
-              <div>
+              <div className={styles.status}>
                 {getStatusIcon(a.approval_status)}
-                <p>{a.approval_status}</p>
+                <p
+                  className={classNames(styles.pill, styles[a.approval_status])}
+                >
+                  {capitalizeFirstLetter(a.approval_status)}
+                </p>
               </div>
             ),
-            submitted: <p>{new Date(a.date_created).toDateString()}</p>,
+            submitted: <p>{new Date(a.date_created).toLocaleDateString()}</p>,
             answers: a.answers,
-            actions: <div></div>,
+            actions: (
+              <div className={styles.actions}>
+                {a.approval_status === ApprovalStatus.PENDING && (
+                  <>
+                    <p
+                      className={styles.approveAction}
+                      onClick={(e: React.MouseEvent<HTMLElement>) => {
+                        e.stopPropagation();
+                        setApprovalStatus(
+                          GROUP_ID,
+                          a.id,
+                          ApprovalStatus.APPROVE
+                        );
+                        updateApplicationStatus(a.id, ApprovalStatus.APPROVE);
+                      }}
+                    >
+                      Approve
+                    </p>
+                    <p
+                      className={styles.rejectAction}
+                      onClick={async (e: React.MouseEvent<HTMLElement>) => {
+                        e.stopPropagation();
+                        await setApprovalStatus(
+                          GROUP_ID,
+                          a.id,
+                          ApprovalStatus.REJECT
+                        );
+                        updateApplicationStatus(a.id, ApprovalStatus.REJECT);
+                      }}
+                    >
+                      Reject
+                    </p>
+                  </>
+                )}
+              </div>
+            ),
           };
         })}
       />

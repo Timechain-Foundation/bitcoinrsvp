@@ -383,10 +383,10 @@ app.post(
 
     let { group_id, membership_id, approval_status } = req.params;
 
-    if (approval_status != "approve" && approval_status != "reject") {
+    if (approval_status != "approved" && approval_status != "rejected") {
       return res
         .status(400)
-        .send("Approval status must be 'approve' or 'reject'");
+        .send("Approval status must be 'approved' or 'rejected'");
     }
 
     const getGroupByGroupIdAndOrgIdSql = `SELECT * FROM group_entity WHERE id = ? AND organizer_id = ?`;
@@ -422,8 +422,8 @@ app.post(
         );
     }
 
-    const updateMembershipApplication = `UPDATE membership SET approval_status = ?`;
-    await db.run(updateMembershipApplication, approval_status);
+    const updateMembershipApplication = `UPDATE membership SET approval_status = ? WHERE membership.id = ?`;
+    await db.run(updateMembershipApplication, approval_status, membership_id);
 
     return res.json(true);
   }

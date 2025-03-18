@@ -1,19 +1,20 @@
-const API_BASE = ``;
+const BASE_URL = process.env["BASE_URL"];
 
 async function get_(path: string) {
-  let res = await fetch(`${API_BASE}/${path}`, {
+  let res = await fetch(`${BASE_URL}/${path}`, {
     credentials: "include",
   });
   return res.json();
 }
 
-async function post_(path: string, body: any) {
-  let res = await fetch(`${API_BASE}/${path}`, {
+async function post_(path: string, body?: any) {
+  let res = await fetch(`${BASE_URL}/${path}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
+    credentials: "include",
   });
 
   return res;
@@ -38,4 +39,14 @@ export function postApplication(
 
 export function getApplications(groupId: number) {
   return get_(`${groupId}/membership`);
+}
+
+export enum ApprovalStatus {
+  REJECT = "rejected",
+  PENDING = "pending",
+  APPROVE = "approved"
+}
+
+export function setApprovalStatus(groupId: number, membershipId: number, approvalStatus: ApprovalStatus) {
+  return post_(`${groupId}/membership/${membershipId}/${approvalStatus}`);
 }
