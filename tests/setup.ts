@@ -9,7 +9,6 @@ interface TableInfo {
 let db = new DB();
 
 beforeAll(async () => {
-  console.log("beforeAll testDb started");
   createDb();
   await db.execAsync(schema);
 });
@@ -24,7 +23,6 @@ beforeEach(async () => {
   );
 
   for (const table of tables) {
-    console.log(`deleting row from ${table.name}`)
     await db.db.run(`DELETE FROM ${table.name}`);
   }
 });

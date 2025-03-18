@@ -61,7 +61,6 @@ const UNAUTHENTICATED_ORGANIZER_REQUEST =
   'You must be logged in as an org to request this action';
 
 const secretKey = process.env.COOKIE_SECRET_KEY;
-console.log('secretKey = ' + secretKey);
 
 app.use(cookieParser(secretKey));
 app.use(express.static(__dirname + '/ui/build'));
