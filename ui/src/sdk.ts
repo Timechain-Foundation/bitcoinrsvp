@@ -1,17 +1,20 @@
-const API_BASE = ``;
+const BASE_URL = process.env["REACT_APP_BASE_URL"] ?? "";
 
 async function get_(path: string) {
-  let res = await fetch(`${API_BASE}/${path}`);
+  let res = await fetch(`${BASE_URL}/${path}`, {
+    credentials: "include",
+  });
   return res.json();
 }
 
-async function post_(path: string, body: any) {
-  let res = await fetch(`${API_BASE}/${path}`, {
+async function post_(path: string, body?: any) {
+  let res = await fetch(`${BASE_URL}/${path}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
+    credentials: "include",
   });
 
   return res;
