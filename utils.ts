@@ -9,7 +9,7 @@ export async function getGroupByGroupIdAndOrgId(db, groupId, orgId) {
 
   let group;
   try {
-    group = await db.get(getGroupByGroupIdAndOrgIdSql, groupId, orgId);
+    group = await db.getAsync(getGroupByGroupIdAndOrgIdSql, groupId, orgId);
   } catch (e) {
     console.error(e);
     return;
@@ -42,7 +42,7 @@ export async function getGroupById(db, groupId) {
 
   let group;
   try {
-    group = await db.get(getGroupByGroupIdSql, groupId);
+    group = await db.getAsync(getGroupByGroupIdSql, groupId);
     group.questions = JSON.parse(group?.questions);
   } catch (e) {
     console.error(e);
@@ -121,7 +121,7 @@ export async function getEventsByGroupId(db, groupId: number) {
 
 export async function getEventsById(db, eventId: number) {
   let getEventByIdSql = `SELECT * FROM event WHERE id = ?`;
-  return db.get(getEventByIdSql, eventId);
+  return db.getAsync(getEventByIdSql, eventId);
 }
 
 export async function getTicketInfoForEvent(db, eventId: number) {
@@ -145,7 +145,7 @@ export async function getTicketInfoForEvent(db, eventId: number) {
 
 export async function getUserById(db, userId) {
   const sql = `SELECT * FROM user WHERE id = ?`;
-  return db.get(sql, userId);
+  return db.getAsync(sql, userId);
 }
 
 export async function getUserByInvoice(db, invoice) {
@@ -153,7 +153,7 @@ export async function getUserByInvoice(db, invoice) {
     SELECT * FROM user_invoice WHERE invoice = ?
   `;
 
-  let userInvoice = await db.get(getUserInvoiceSql, invoice);
+  let userInvoice = await db.getAsync(getUserInvoiceSql, invoice);
   let user = await getUserById(db, userInvoice.user_id);
   return [user, userInvoice];
 }
@@ -211,7 +211,7 @@ export async function createUserTicket(
 
 export async function getUserTicket(db: any, eventId: any, userId: any) {
   const sql = `SELECT * FROM user_ticket WHERE user_id = ? AND event_id = ?`;
-  let userTicket = await db.get(sql, userId, eventId);
+  let userTicket = await db.getAsync(sql, userId, eventId);
 
   return userTicket;
 }

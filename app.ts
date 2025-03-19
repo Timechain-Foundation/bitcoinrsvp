@@ -54,11 +54,10 @@ var corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 const db = new DB();
 
 const UNAUTHENTICATED_ORGANIZER_REQUEST =
-  'You must be logged in as an org to request this action';
+  "You must be logged in as an org to request this action";
 
 const secretKey = process.env.COOKIE_SECRET_KEY;
 
@@ -67,28 +66,28 @@ app.use(express.static(__dirname + '/ui/build'));
 
 export const ECPair = ECPairFactory(ecclib);
 let keypair = ECPair.fromPrivateKey(
-  Buffer.from(process.env.LIQUID_PRIVATE_KEY, 'hex')
+  Buffer.from(process.env.LIQUID_PRIVATE_KEY, "hex")
 );
 
 const secretRoute = process.env.SECRET_ROUTE;
 
-app.get('/ping', (req: Request, res: Response): any => {
+app.get("/ping", (req: Request, res: Response): any => {
   return res.send(true);
 });
 
-app.get('/', (req, res) => {
-  const ext = __dirname + '/ui/build';
-  res.sendFile(ext + '/index.html');
+app.get("/", (req, res) => {
+  const ext = __dirname + "/ui/build";
+  res.sendFile(ext + "/index.html");
 });
 
-app.get('/org/auth', (req: Request, res: Response) => {});
+app.get("/org/auth", (req: Request, res: Response) => {});
 
 app.get(`/${secretRoute}`, (req: Request, res: Response): any => {
   CookieHelper.setOrgCookie(res, 1);
   return res.send(true);
 });
 
-app.post('/org', async (req: Request, res: Response): Promise<any> => {
+app.post("/org", async (req: Request, res: Response): Promise<any> => {
   let { email } = req.body;
 
   const insertOrgSql = `
@@ -102,7 +101,7 @@ app.post('/org', async (req: Request, res: Response): Promise<any> => {
   return res.send(r);
 });
 
-app.post('/group', async (req: Request, res: Response): Promise<any> => {
+app.post("/group", async (req: Request, res: Response): Promise<any> => {
   let orgSession = CookieHelper.getOrgCookie(req);
 
   if (!orgSession) {
@@ -113,10 +112,10 @@ app.post('/group', async (req: Request, res: Response): Promise<any> => {
     orgSession = JSON.parse(orgSession);
   }
 
-  let { name, description = '', rules = '' } = req.body;
+  let { name, description = "", rules = "" } = req.body;
 
   if (!name) {
-    return res.status(400).send('Must have valid name');
+    return res.status(400).send("Must have valid name");
   }
 
   const insertGroupSql = `
@@ -147,7 +146,7 @@ app.post('/group', async (req: Request, res: Response): Promise<any> => {
   return res.send(true);
 });
 
-app.get('/group', async (req: Request, res: Response): Promise<any> => {
+app.get("/group", async (req: Request, res: Response): Promise<any> => {
   let orgSession = CookieHelper.getOrgCookie(req);
 
   if (!orgSession) {
@@ -187,7 +186,7 @@ WHERE g.organizer_id = ?`;
 });
 
 app.post(
-  '/:group_id/membership/question',
+  "/:group_id/membership/question",
   async (req: Request, res: Response): Promise<any> => {
     let { questions } = req.body;
     if (!Array.isArray(questions)) {
@@ -198,7 +197,7 @@ app.post(
     let group = await getGroupById(db, group_id);
 
     if (!group) {
-      return res.status(400).send('Group not found');
+      return res.status(400).send("Group not found");
     }
 
     let insert = `INSERT INTO group_application_question (group_id, question, date_created) VALUES (?, ?, ?)`;
@@ -211,13 +210,13 @@ app.post(
 );
 
 app.get(
-  '/group/:group_id',
+  "/group/:group_id",
   async (req: Request, res: Response): Promise<any> => {
     let { group_id } = req.params;
     let group = await getGroupById(db, group_id);
 
     if (!group) {
-      return res.status(400).send('Group not found');
+      return res.status(400).send("Group not found");
     }
 
     return res.json(group);
@@ -225,27 +224,27 @@ app.get(
 );
 
 app.post(
-  '/:group_id/membership',
+  "/:group_id/membership",
   async (req: Request, res: Response): Promise<any> => {
     let { email, name, questions: applicationAnswers } = req.body;
 
     if (!email) {
-      return res.status(400).send('Must enter a valid email');
+      return res.status(400).send("Must enter a valid email");
     }
 
     if (!name) {
-      return res.status(400).send('Must enter a valid name');
+      return res.status(400).send("Must enter a valid name");
     }
 
     if (applicationAnswers && !Array.isArray(applicationAnswers)) {
-      return res.status(400).send('questions must be an array');
+      return res.status(400).send("questions must be an array");
     }
 
     let { group_id } = req.params;
     let group = await getGroupById(db, group_id);
 
     if (!group) {
-      return res.status(400).send('Group not found');
+      return res.status(400).send("Group not found");
     }
 
     let errors = [];
@@ -338,7 +337,7 @@ app.post(
 );
 
 app.get(
-  '/:group_id/membership',
+  "/:group_id/membership",
   async (req: Request, res: Response): Promise<any> => {
     let orgSession = CookieHelper.getOrgCookie(req);
     if (!orgSession) {
@@ -353,7 +352,7 @@ app.get(
     );
 
     if (!group) {
-      return res.status(400).send('Group not found');
+      return res.status(400).send("Group not found");
     }
 
     const getGroupApplications = `
@@ -386,7 +385,7 @@ app.get(
 );
 
 app.post(
-  '/:group_id/membership/:membership_id/:approval_status',
+  "/:group_id/membership/:membership_id/:approval_status",
   async (req: Request, res: Response): Promise<any> => {
     let orgSession = CookieHelper.getOrgCookie(req);
     if (!orgSession) {
@@ -395,7 +394,7 @@ app.post(
 
     let { group_id, membership_id, approval_status } = req.params;
 
-    if (approval_status != 'approved' && approval_status != 'rejected') {
+    if (approval_status != "approved" && approval_status != "rejected") {
       return res
         .status(400)
         .send("Approval status must be 'approved' or 'rejected'");
@@ -423,10 +422,10 @@ app.post(
     );
 
     if (!groupApplication) {
-      return res.status(400).send('Group application not found');
+      return res.status(400).send("Group application not found");
     }
 
-    if (groupApplication.approval_status != 'pending') {
+    if (groupApplication.approval_status != "pending") {
       return res
         .status(400)
         .send(
@@ -442,7 +441,7 @@ app.post(
 );
 
 app.post(
-  '/:group_id/event',
+  "/:group_id/event",
   async (req: Request, res: Response): Promise<any> => {
     let orgSession = CookieHelper.getOrgCookie(req);
     if (!orgSession) {
@@ -457,7 +456,7 @@ app.post(
     );
 
     if (!group) {
-      return res.status(400).send('Group not found');
+      return res.status(400).send("Group not found");
     }
 
     let {
@@ -475,7 +474,7 @@ app.post(
 );
 
 app.get(
-  '/:group_id/event',
+  "/:group_id/event",
   async (req: Request, res: Response): Promise<any> => {
     let orgSession = CookieHelper.getOrgCookie(req);
     if (!orgSession) {
@@ -490,7 +489,7 @@ app.get(
     );
 
     if (!group) {
-      return res.status(400).send('Group not found');
+      return res.status(400).send("Group not found");
     }
 
     let events = await getEventsByGroupId(db, group.id);
@@ -499,13 +498,13 @@ app.get(
 );
 
 app.get(
-  '/event/:event_id/ticket',
+  "/event/:event_id/ticket",
   async (req: Request, res: Response): Promise<any> => {
     let { event_id: eventId } = req.params;
     let event = await getEventsById(db, Number(eventId));
 
     if (!event) {
-      return res.status(400).send('Event not found');
+      return res.status(400).send("Event not found");
     }
 
     let tickets = await getTicketInfoForEvent(db, event.id);
@@ -514,13 +513,13 @@ app.get(
 );
 
 app.post(
-  '/event/:event_id/ticket/invoice',
+  "/event/:event_id/ticket/invoice",
   async (req: Request, res: Response): Promise<any> => {
     let { event_id: eventId } = req.params;
     let event = await getEventsById(db, Number(eventId));
 
     if (!event) {
-      return res.status(400).send('Event not found');
+      return res.status(400).send("Event not found");
     }
 
     let tickets = await getTicketInfoForEvent(db, event.id);
@@ -530,11 +529,11 @@ app.post(
     let userTicket = await getUserTicket(db, eventId, user_id);
 
     if (userTicket) {
-      return res.status(400).send('User already has a ticket');
+      return res.status(400).send("User already has a ticket");
     }
 
-    if (type != 'regular' && type != 'random') {
-      return res.status(400).send('Must be regular or random');
+    if (type != "regular" && type != "random") {
+      return res.status(400).send("Must be regular or random");
     }
 
     let ticket = tickets.filter((t) => {
@@ -542,12 +541,12 @@ app.post(
     })[0];
 
     if (ticket.max_quantity <= 0) {
-      return res.status(400).send('No more tickets');
+      return res.status(400).send("No more tickets");
     }
 
     let amountInSatoshis = await getSatoshisFromCents(ticket.price_in_cents);
     let preimage = uuidv4();
-    let publicKey = keypair.publicKey.toString('hex');
+    let publicKey = keypair.publicKey.toString("hex");
 
     let reverseSubmarineSwapResponse = await BoltzClient.getInvoice(
       preimage,
@@ -574,20 +573,20 @@ app.post(
 
 //TODO: Call repeatedly from frontend and cron job
 app.post(
-  '/event/:event_id/ticket/invoice/confirm',
+  "/event/:event_id/ticket/invoice/confirm",
   async (req: Request, res: Response): Promise<any> => {
     let { event_id: eventId } = req.params;
     let event = await getEventsById(db, Number(eventId));
 
     if (!event) {
-      return res.status(400).send('Event not found');
+      return res.status(400).send("Event not found");
     }
 
     let { invoice } = req.body;
     let [user, userInvoice] = await getUserByInvoice(db, invoice);
 
     if (!user || !userInvoice) {
-      return res.status(400).send('Invoice not found');
+      return res.status(400).send("Invoice not found");
     }
 
     // TODO: Validate address on userInvoice was paid and return 400 if not
@@ -603,7 +602,7 @@ app.post(
       console.error(e);
       return res
         .status(400)
-        .send('The ticket for this invoice has already been redeemed');
+        .send("The ticket for this invoice has already been redeemed");
     }
   }
 );
