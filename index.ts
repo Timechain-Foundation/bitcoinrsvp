@@ -29,7 +29,34 @@ var https = require("https");
 
 let app: Express = express();
 app.use(express.json());
-app.use(cors());
+
+let whitelist;
+try {
+  console.log(
+    `Configuring CORS whitelist from env var: ${process.env.CORS_WHITELIST}`
+  );
+  whitelist = JSON.parse(process.env.CORS_WHITELIST);
+} catch (e) {
+  console.log("Empty or invalid CORS whitelist found");
+  whitelist = [];
+}
+
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (!whitelist) {
+      return callback(null, true);
+    }
+
+    if (whitelist.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+
+    callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 const UNAUTHENTICATED_ORGANIZER_REQUEST =
   "You must be logged in as an org to request this action";
@@ -57,7 +84,7 @@ app.get("/org/auth", (req: Request, res: Response) => {});
 
 app.get(`/${secretRoute}`, (req: Request, res: Response) => {
   CookieHelper.setOrgCookie(res, 1);
-})
+});
 
 app.post("/org", async (req: Request, res: Response): Promise<any> => {
   let { email } = req.body;
