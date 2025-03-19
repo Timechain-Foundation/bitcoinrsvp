@@ -46,7 +46,7 @@ function ApplicationForm() {
     "Invitees can reserve only one ticket. Reservations are first come-first served, Ticket confirmations are final and cannot be transferred, as invitations are approved on a case-by-case basis.";
 
   return (
-    <div className={classNames(styles.content, styles.submittedContent)}>
+    <div className={classNames(styles.content, submitted && styles.submittedContent)}>
       {submitted ? (
         <div className={classNames(styles.confirm)}>
           <LogoSvg className={styles.logoSvg} />
