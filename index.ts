@@ -599,6 +599,11 @@ app.post(
 
 app.use(express.static(__dirname + "/ui/build"));
 
+app.get("*", (req: Request, res: Response): any => {
+  const ext = __dirname + "/ui/build";
+  res.sendFile(ext + "/index.html");
+});
+
 const PORT = process.env.PORT ?? 80;
 
 let db;
