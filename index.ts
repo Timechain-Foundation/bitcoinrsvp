@@ -423,8 +423,8 @@ app.post(
         );
     }
 
-    const updateMembershipApplication = `UPDATE membership SET approval_status = ?`;
-    await db.run(updateMembershipApplication, approval_status);
+    const updateMembershipApplication = `UPDATE membership SET approval_status = ? WHERE membership.id = ?`;
+    await db.run(updateMembershipApplication, approval_status, membership_id);
 
     return res.json(true);
   }
