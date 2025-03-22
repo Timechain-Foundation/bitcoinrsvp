@@ -108,6 +108,8 @@ app.post("/group", async (req: Request, res: Response): Promise<any> => {
     return res.status(400).send(UNAUTHENTICATED_ORGANIZER_REQUEST);
   }
 
+  // todo: for some reason the tests result in orgSession being a string instead of Object,
+  //   for now if its a string parse it.
   if (typeof orgSession === 'string') {
     orgSession = JSON.parse(orgSession);
   }
@@ -151,6 +153,12 @@ app.get("/group", async (req: Request, res: Response): Promise<any> => {
 
   if (!orgSession) {
     return res.status(400).send(UNAUTHENTICATED_ORGANIZER_REQUEST);
+  }
+
+  // todo: for some reason the tests result in orgSession being a string instead of Object,
+  //   for now if its a string parse it.
+  if (typeof orgSession === 'string') {
+    orgSession = JSON.parse(orgSession);
   }
 
   const getGroupSql = `
