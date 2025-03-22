@@ -1,0 +1,15 @@
+.question,
+.answer {
+  font-size: 14px;
+  margin: 0px;
+}
+
+.question {
+  font-weight: 500;
+  color: white;
+}
+
+.answer {
+  color: rgb(156, 163, 175);
+  margin-top: 4px;
+}

@@ -1,0 +1,47 @@
+.table {
+    background-color: rgb(17 24 39);
+    box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+      rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px;
+      border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .row,
+  .tableHeader {
+    font-size: 14px;
+    color: rgb(156, 163, 175);
+    height: 40px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 12px 24px;
+  }
+  
+  .tableHeader {
+    text-transform: uppercase;
+    font-weight: 500;
+    
+  }
+  
+  .row {
+    border-top: 1px solid rgb(31, 41, 55);
+    cursor: pointer;
+    height: 72px;
+  }
+  
+  .row:hover {
+    background-color: #353e4b;
+  }
+
+  .expanded {
+    padding: 16px 24px;
+    background-color: #353e4b;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .applicantExpandIcon {
+    width: 16px;
+    margin-right: 8px;
+  }
