@@ -394,10 +394,10 @@ app.post(
 
     let { group_id, membership_id, approval_status } = req.params;
 
-    if (approval_status != "approved" && approval_status != "rejected") {
+    if (approval_status != "approved" && approval_status != "rejected" && approval_status != "pending") {
       return res
         .status(400)
-        .send("Approval status must be 'approved' or 'rejected'");
+        .send("Approval status must be 'approved', 'rejected', or 'pending'");
     }
 
     const getGroupByGroupIdAndOrgIdSql = `SELECT * FROM group_entity WHERE id = ? AND organizer_id = ?`;
@@ -425,12 +425,20 @@ app.post(
       return res.status(400).send("Group application not found");
     }
 
-    if (groupApplication.approval_status != "pending") {
-      return res
-        .status(400)
-        .send(
-          `Membership application already ${groupApplication.approval_status}d`
-        );
+    if (approval_status === "pending") {
+      // When undoing, we only allow undoing from approved or rejected status
+      if (groupApplication.approval_status === "pending") {
+        return res.status(400).send("Cannot undo a pending application");
+      }
+    } else {
+      // When approving/rejecting, we only allow from pending status
+      if (groupApplication.approval_status !== "pending") {
+        return res
+          .status(400)
+          .send(
+            `Membership application already ${groupApplication.approval_status}d`
+          );
+      }
     }
 
     const updateMembershipApplication = `UPDATE membership SET approval_status = ? WHERE membership.id = ?`;
