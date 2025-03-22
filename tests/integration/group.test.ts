@@ -46,5 +46,34 @@ describe('POST /group', () => {
     // DB should still have just one row
     const rows2 = await db.allAsync(`SELECT * FROM group_entity`);
     expect(rows2.length).toBe(1);
+
+    //get group call should return 1 group
+    const getGroupRes = await request(app)
+      .get('/group')
+      .set('Cookie', cookie);
+    
+    expect(JSON.parse(getGroupRes.text)).toEqual([
+      {
+        id: 1,
+        name: 'Dinner season one',
+        description: 'a dinner among friends',
+        rules: 'be cool',
+        questions: [],
+      },
+    ]);
+  });
+
+  it('getting group returns empty list if none found', async () => {
+    const cookie = CookieHelper.generateSignedCookie(
+      Constants.orgSessionCookieName,
+      { org_id: 1 },
+      secretKey
+    );
+
+    const getGroupRes = await request(app)
+      .get('/group')
+      .set('Cookie', cookie);
+    
+    expect(getGroupRes.text).toBe("[]");
   });
 });
