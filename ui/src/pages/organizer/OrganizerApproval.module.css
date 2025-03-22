@@ -125,12 +125,40 @@
   justify-content: right;
 }
 
+.approveAction, .rejectAction, .undoAction {
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
 .approveAction {
   color: rgb(34, 197, 94);
-  font-weight: 500;
+  background-color: rgba(34, 197, 94, 0.1);
+}
+
+.approveAction:hover {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: rgb(34, 197, 94);
 }
 
 .rejectAction {
   color: rgb(239, 68, 68);
-  font-weight: 500;
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.rejectAction:hover {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: rgb(239, 68, 68);
+}
+
+.undoAction {
+  color: rgb(156, 163, 175);
+  background-color: rgba(156, 163, 175, 0.1);
+}
+
+.undoAction:hover {
+  background-color: rgba(156, 163, 175, 0.2);
+  color: rgb(229, 231, 235);
 }

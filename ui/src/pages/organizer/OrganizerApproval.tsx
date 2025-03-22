@@ -225,6 +225,22 @@ export default function OragnizerApproval() {
                     </p>
                   </>
                 )}
+                {(a.approval_status === ApprovalStatus.APPROVE || a.approval_status === ApprovalStatus.REJECT) && (
+                  <p
+                    className={styles.undoAction}
+                    onClick={async (e: React.MouseEvent<HTMLElement>) => {
+                      e.stopPropagation();
+                      await setApprovalStatus(
+                        GROUP_ID,
+                        a.id,
+                        ApprovalStatus.PENDING
+                      );
+                      updateApplicationStatus(a.id, ApprovalStatus.PENDING);
+                    }}
+                  >
+                    Undo
+                  </p>
+                )}
               </div>
             ),
           };
