@@ -9,7 +9,6 @@ function Nav() {
         <p className={styles.logoText}>BTC RSVP</p>
       </div>
       <div className={styles.rightAligned}>
-        {/* Removed the Login button */}
       </div>
     </nav>
   );
