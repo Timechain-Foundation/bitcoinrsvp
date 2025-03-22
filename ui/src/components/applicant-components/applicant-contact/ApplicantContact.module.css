@@ -1,0 +1,14 @@
+.applicant {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.name {
+  color: white;
+}
+
+.email {
+  font-size: 14px;
+  color: rgb(156, 163, 175);
+}

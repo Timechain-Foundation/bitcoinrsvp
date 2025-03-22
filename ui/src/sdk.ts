@@ -44,9 +44,13 @@ export function getApplications(groupId: number) {
 export enum ApprovalStatus {
   REJECT = "rejected",
   PENDING = "pending",
-  APPROVE = "approved"
+  APPROVE = "approved",
 }
 
-export function setApprovalStatus(groupId: number, membershipId: number, approvalStatus: ApprovalStatus) {
+export function setApprovalStatus(
+  groupId: number,
+  membershipId: number,
+  approvalStatus: ApprovalStatus
+): Promise<Response> {
   return post_(`${groupId}/membership/${membershipId}/${approvalStatus}`);
 }

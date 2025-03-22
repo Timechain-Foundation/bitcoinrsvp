@@ -2,7 +2,7 @@ import "./App.css";
 import Nav from "./components/nav/Nav";
 import ApplicationForm from "./pages/application-form/ApplicationForm";
 import { createBrowserRouter, RouterProvider } from "react-router";
-import OragnizerApproval from "./pages/organizer/OrganizerApproval";
+import OrganizerApproval from "./pages/organizer/OrganizerApproval";
 
 function App() {
   const router = createBrowserRouter([
@@ -12,7 +12,7 @@ function App() {
     },
     {
       path: "/organizer",
-      element: <OragnizerApproval />,
+      element: <OrganizerApproval />,
     }
   ]);
   return (
