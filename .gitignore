@@ -134,3 +134,4 @@ test.ts
 *.sqlite
 schema
 build
+cookie.txt

@@ -2,7 +2,7 @@
 
 ## Deployment instructions
 
-## Docker deployment
+### Docker deployment
 
 ```
 docker compose up btcrsvp --build
