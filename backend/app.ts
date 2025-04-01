@@ -1,9 +1,9 @@
-import express, { Express, Request, Response } from 'express';
-import CookieHelper from './cookie-helper';
-import { v4 as uuidv4 } from 'uuid';
-import cookieParser from 'cookie-parser';
-import ECPairFactory from 'ecpair';
-import * as ecclib from 'tiny-secp256k1';
+import express, { Express, Request, Response } from "express";
+import CookieHelper from "./cookie-helper";
+import { v4 as uuidv4 } from "uuid";
+import cookieParser from "cookie-parser";
+import ECPairFactory from "ecpair";
+import * as ecclib from "tiny-secp256k1";
 import {
   createEvent,
   createUserInvoice,
@@ -18,12 +18,12 @@ import {
   getUserTicket,
   setRandomTicketTier,
   setRegularTicketTier,
-} from './utils';
-import BoltzClient from './boltz-client';
-import DB from './db/db';
+} from "./utils";
+import BoltzClient from "./boltz-client";
+import DB from "./db/db";
 
-var cors = require('cors');
-var https = require('https');
+var cors = require("cors");
+var https = require("https");
 
 const app: Express = express();
 app.use(express.json());
@@ -59,10 +59,11 @@ const db = new DB();
 const UNAUTHENTICATED_ORGANIZER_REQUEST =
   "You must be logged in as an org to request this action";
 
+const UI_BUILD_DIR = "/build";
 const secretKey = process.env.COOKIE_SECRET_KEY;
 
 app.use(cookieParser(secretKey));
-app.use(express.static(__dirname + '/ui/build'));
+app.use(express.static(__dirname + UI_BUILD_DIR));
 
 export const ECPair = ECPairFactory(ecclib);
 let keypair = ECPair.fromPrivateKey(
@@ -76,7 +77,7 @@ app.get("/ping", (req: Request, res: Response): any => {
 });
 
 app.get("/", (req, res) => {
-  const ext = __dirname + "/ui/build";
+  const ext = __dirname + UI_BUILD_DIR;
   res.sendFile(ext + "/index.html");
 });
 
@@ -110,7 +111,7 @@ app.post("/group", async (req: Request, res: Response): Promise<any> => {
 
   // todo: for some reason the tests result in orgSession being a string instead of Object,
   //   for now if its a string parse it.
-  if (typeof orgSession === 'string') {
+  if (typeof orgSession === "string") {
     orgSession = JSON.parse(orgSession);
   }
 
@@ -136,10 +137,8 @@ app.post("/group", async (req: Request, res: Response): Promise<any> => {
     );
   } catch (e) {
     console.error(e);
-    if (e.code === 'SQLITE_CONSTRAINT') {
-      return res
-        .status(409)
-        .json({ error: `Constraint error: ${e}` });
+    if (e.code === "SQLITE_CONSTRAINT") {
+      return res.status(409).json({ error: `Constraint error: ${e}` });
     }
   }
 
@@ -157,7 +156,7 @@ app.get("/group", async (req: Request, res: Response): Promise<any> => {
 
   // todo: for some reason the tests result in orgSession being a string instead of Object,
   //   for now if its a string parse it.
-  if (typeof orgSession === 'string') {
+  if (typeof orgSession === "string") {
     orgSession = JSON.parse(orgSession);
   }
 
@@ -402,7 +401,11 @@ app.post(
 
     let { group_id, membership_id, approval_status } = req.params;
 
-    if (approval_status != "approved" && approval_status != "rejected" && approval_status != "pending") {
+    if (
+      approval_status != "approved" &&
+      approval_status != "rejected" &&
+      approval_status != "pending"
+    ) {
       return res
         .status(400)
         .send("Approval status must be 'approved', 'rejected', or 'pending'");
@@ -450,7 +453,11 @@ app.post(
     }
 
     const updateMembershipApplication = `UPDATE membership SET approval_status = ? WHERE membership.id = ?`;
-    await db.runAsync(updateMembershipApplication, approval_status, membership_id);
+    await db.runAsync(
+      updateMembershipApplication,
+      approval_status,
+      membership_id
+    );
 
     return res.json(true);
   }
@@ -623,9 +630,9 @@ app.post(
   }
 );
 
-app.get('*', (req: Request, res: Response): any => {
-  const ext = __dirname + '/ui/build';
-  res.sendFile(ext + '/index.html');
+app.get("*", (req: Request, res: Response): any => {
+  const ext = __dirname + UI_BUILD_DIR;
+  res.sendFile(ext + "/index.html");
 });
 
 export default app;

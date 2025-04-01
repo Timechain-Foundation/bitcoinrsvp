@@ -133,3 +133,4 @@ test.ts
 .DS_Store
 *.sqlite
 schema
+build
