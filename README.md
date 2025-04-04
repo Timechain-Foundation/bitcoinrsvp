@@ -72,3 +72,5 @@ To start the application run:
 ```
 npm run start
 ```
+
+and navigate to localhost:8080
