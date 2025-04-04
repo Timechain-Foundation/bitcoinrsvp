@@ -5,7 +5,7 @@
 ### Docker deployment
 
 ```
-docker compose up btcrsvp --build
+docker compose up app --build
 ```
 
 After the deployment finishes, use the following commands from your host machine to bootstrap your first organization and group:
