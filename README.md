@@ -70,5 +70,5 @@ npm install
 To start the application run:
 
 ```
-npm run dev
+npm run start
 ```
