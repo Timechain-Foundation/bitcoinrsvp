@@ -54,3 +54,25 @@ export function setApprovalStatus(
 ): Promise<Response> {
   return post_(`${groupId}/membership/${membershipId}/${approvalStatus}`);
 }
+
+export interface CreateEvent {
+  name: string;
+  description: string;
+  location: string;
+  date: string;
+}
+
+export async function createEvent(groupId: number, event: CreateEvent) {
+  // TODO: Change these values.
+  let price_in_cents = 0;
+  let max_quantity = 100;
+  return post_(`${groupId}/event`, {
+    ...event,
+    price_in_cents,
+    max_quantity,
+  });
+}
+
+export function getEvents(groupId: number) {
+  return get_(`${groupId}/event`);
+}
