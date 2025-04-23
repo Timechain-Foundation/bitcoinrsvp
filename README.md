@@ -74,3 +74,41 @@ npm run start
 ```
 
 and navigate to localhost:8080
+
+## Creating and running a database migration
+
+To create a database migration, initialize a migration by running:
+
+```
+npx knex migrate:make migration_name
+```
+
+A file with the `migration_name` specified should now be in the `migrations` folder.
+
+The basic structure of a migration should look like this (`<query>` added as a placeholder for a sql query string):
+
+```
+import type { Knex } from "knex";
+
+export async function up(knex: Knex): Promise<void> {
+  return knex.raw(<query>);
+}
+
+export async function down(knex: Knex): Promise<void> {
+  return knex.raw(<query>);
+}
+```
+
+**Note:** Do **not** forget to await or return your knex.raw statement
+
+Finally to run your migration use:
+
+```
+npx knex migrate:up <file_name>
+```
+
+Or, to ensure all migrations have been applied, run:
+
+```
+knex migrate:latest
+```

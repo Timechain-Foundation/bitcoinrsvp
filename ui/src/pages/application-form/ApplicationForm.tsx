@@ -23,7 +23,7 @@ function ApplicationForm() {
       setLoading(true);
       let res = await postApplication(GROUP_ID, application);
 
-      if (res.status != 200) {
+      if (res.status !== 200) {
         let errorText = await res.text();
         setError(errorText);
       }
@@ -46,7 +46,12 @@ function ApplicationForm() {
     "Invitees can reserve only one ticket. Reservations are first come-first served, Ticket confirmations are final and cannot be transferred, as invitations are approved on a case-by-case basis.";
 
   return (
-    <div className={classNames(styles.content, submitted && styles.submittedContent)}>
+    <div
+      className={classNames(
+        styles.content,
+        submitted && styles.submittedContent
+      )}
+    >
       {submitted ? (
         <div className={classNames(styles.confirm)}>
           <LogoSvg className={styles.logoSvg} />
@@ -115,7 +120,7 @@ function ApplicationForm() {
                       questions: [
                         ...(form?.questions?.filter(
                           (existingQuestion: { id: number; answer: string }) =>
-                            existingQuestion.id != q.id
+                            existingQuestion.id !== q.id
                         ) || []),
                         { id: q.id, answer: e.target.value },
                       ],

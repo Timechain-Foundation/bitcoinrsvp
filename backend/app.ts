@@ -483,13 +483,15 @@ app.post(
     }
 
     let {
-      event_name: eventName,
-      event_description: eventDescription,
+      name,
+      description,
+      location,
+      date,
       price_in_cents: priceInCents,
       max_quantity: maxQuantity,
     } = req.body;
 
-    let eventId = await createEvent(db, eventName, eventDescription, group.id);
+    let eventId = await createEvent(db, name, description, location, date, group.id);
     await setRegularTicketTier(db, eventId, priceInCents, maxQuantity);
     await setRandomTicketTier(db, eventId, priceInCents, maxQuantity);
     return res.json(200);

@@ -14,6 +14,7 @@ WORKDIR /app/backend
 COPY backend/package*.json ./
 RUN npm install
 COPY backend/ .
+RUN npx knex migrate:latest
 COPY --from=ui-build /app/build ./build
 
 # Start the backend app

@@ -61,14 +61,18 @@ export async function createEvent(
   db,
   name: string,
   description: string,
+  location: string,
+  date: string,
   groupId: number
 ) {
-  const createEventSql = `INSERT INTO event (name, description, group_id, date_created) VALUES (?, ?, ?, ?)`;
-  let { lastID } = await db.run(
+  const createEventSql = `INSERT INTO event (name, description, location, group_id, date, date_created) VALUES (?, ?, ?, ?, ?, ?)`;
+  let { lastID } = await db.runAsync(
     createEventSql,
     name,
     description,
+    location,
     groupId,
+    date,
     new Date().toISOString()
   );
   return lastID;
@@ -87,7 +91,7 @@ export async function setRegularTicketTier(
   // FOREIGN KEY (event_id) REFERENCES event (id)
 
   const setRegularTicketSql = `INSERT INTO ticket (event_id, type, price_in_cents, max_quantity) VALUES (?, ?, ?, ?)`;
-  let { lastID } = await db.run(
+  let { lastID } = await db.runAsync(
     setRegularTicketSql,
     eventId,
     TicketType.REGUALR,
@@ -104,7 +108,7 @@ export async function setRandomTicketTier(
   maxQuantity: number
 ) {
   const setRandomTicketSql = `INSERT INTO ticket (event_id, type, price_in_cents, max_quantity) VALUES (?, ?, ?, ?)`;
-  let { lastID } = await db.run(
+  let { lastID } = await db.runAsync(
     setRandomTicketSql,
     eventId,
     TicketType.REGUALR,
@@ -116,7 +120,7 @@ export async function setRandomTicketTier(
 
 export async function getEventsByGroupId(db, groupId: number) {
   let getEventsByGroupIdSql = `SELECT * FROM event WHERE group_id = ?`;
-  return await db.all(getEventsByGroupIdSql, groupId);
+  return await db.allAsync(getEventsByGroupIdSql, groupId);
 }
 
 export async function getEventsById(db, eventId: number) {
@@ -127,10 +131,10 @@ export async function getEventsById(db, eventId: number) {
 export async function getTicketInfoForEvent(db, eventId: number) {
   let getTicketsByGroupId = `SELECT * FROM ticket WHERE event_id = ?`;
 
-  let availableTickets = await db.all(getTicketsByGroupId, eventId);
+  let availableTickets = await db.allAsync(getTicketsByGroupId, eventId);
 
   let getUsedTicketByEventId = `SELECT COUNT(*) as count, type FROM user_ticket WHERE event_id = ? GROUP BY type`;
-  let usedTickets = await db.all(getUsedTicketByEventId, eventId);
+  let usedTickets = await db.allAsync(getUsedTicketByEventId, eventId);
 
   return availableTickets.map((a) => {
     let count =
@@ -173,7 +177,7 @@ export async function createUserInvoice(
     INSERT INTO user_invoice (type, event_id, user_id, amount_satoshis, preimage, public_key, address, invoice, date_created)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
-  let { lastID } = await db.run(
+  let { lastID } = await db.runAsync(
     insertSql,
     type,
     eventId,
@@ -198,7 +202,7 @@ export async function createUserTicket(
     VALUES (?, ?, ?, ?, ?)
   `;
   let code = uuidv4();
-  let { lastID } = await db.run(
+  let { lastID } = await db.runAsync(
     insertSql,
     type,
     eventId,
