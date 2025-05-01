@@ -1,7 +1,7 @@
-import cookieSignature from 'cookie-signature';
+import cookieSignature from "cookie-signature";
 
 export const Constants = {
-  orgSessionCookieName: 'org-session',
+  orgSessionCookieName: "org-session",
 };
 
 export default class CookieHelper {
@@ -37,11 +37,18 @@ export default class CookieHelper {
     cookieValue: any,
     secretKey: string
   ): string {
+    const jsonDelimiter = "j:";
     const valueStr =
-      typeof cookieValue === 'string'
+      typeof cookieValue === "string"
         ? cookieValue
-        : JSON.stringify(cookieValue);
-    const signedValue = 's:' + cookieSignature.sign(valueStr, secretKey);
+        : `${jsonDelimiter}${JSON.stringify(cookieValue)}`;
+
+    const signatureDelimiter = "s:";
+    const signedValue = `${signatureDelimiter}${cookieSignature.sign(
+      valueStr,
+      secretKey
+    )}`;
+
     return `${cookieName}=${signedValue}`;
   }
 }

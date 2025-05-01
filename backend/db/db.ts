@@ -1,17 +1,17 @@
 // db.ts
-import sqlite3 from 'sqlite3';
+import sqlite3 from "sqlite3";
 
 class DB {
   public db: sqlite3.Database;
 
   constructor() {
-    const isTestEnv = process.env.NODE_ENV === 'test';
-    const dbPath = isTestEnv ? 'test.sqlite' : 'db.sqlite';
+    const isTestEnv = process.env.NODE_ENV === "test";
+    const dbPath = isTestEnv ? "test.sqlite" : "db.sqlite";
     this.db = new sqlite3.Database(dbPath, (err) => {
       if (err) {
-        console.error('Could not connect to database:', err.message);
+        console.error("Could not connect to database:", err.message);
       } else {
-        console.log('Connected to the SQLite database from DB class.');
+        console.log("Connected to the SQLite database from DB class.");
       }
     });
   }
@@ -67,12 +67,16 @@ class DB {
   }
 
   close() {
-    this.db.close((err) => {
-      if (err) {
-        console.error('Error closing database:', err.message);
-      } else {
-        console.log('Closed the database connection.');
-      }
+    return new Promise<void>((resolve, reject) => {
+      this.db.close((err) => {
+        if (err) {
+          console.error("Error closing database:", err.message);
+          reject(err);
+        } else {
+          console.log("Closed the database connection.");
+          resolve();
+        }
+      });
     });
   }
 }
