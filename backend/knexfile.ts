@@ -1,12 +1,13 @@
 import type { Knex } from "knex";
 
-// Update with your config settings.
+const isTestEnv = process.env.NODE_ENV === "test";
+const filename = isTestEnv ? "test.sqlite" : "./db.sqlite";
 
-const config: Knex.Config  = {
+const config: Knex.Config = {
   client: "sqlite3",
   connection: {
-    filename: "./db.sqlite",
+    filename,
   },
 };
 
-module.exports = config;
+export default config;
